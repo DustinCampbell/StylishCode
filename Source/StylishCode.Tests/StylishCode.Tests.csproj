@@ -34,9 +34,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\StylishCode\StylishCode.csproj">
       <Project>{b72270a2-add0-4f4d-bf8f-cc158bf74d43}</Project>
       <Name>StylishCode</Name>
