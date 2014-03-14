@@ -54,6 +54,39 @@ namespace StylishCode
                 && !doStatement.Statement.IsKind(SyntaxKind.Block);
         }
 
+        public static bool NeedsBraces(ForStatementSyntax forStatement)
+        {
+            if (forStatement == null)
+            {
+                throw new ArgumentNullException("forStatement");
+            }
+
+            return forStatement.Statement != null
+                && !forStatement.Statement.IsKind(SyntaxKind.Block);
+        }
+
+        public static bool NeedsBraces(LockStatementSyntax lockStatement)
+        {
+            if (lockStatement == null)
+            {
+                throw new ArgumentNullException("lockStatement");
+            }
+
+            return lockStatement.Statement != null
+                && !lockStatement.Statement.IsKind(SyntaxKind.Block);
+        }
+
+        public static bool NeedsBraces(ForEachStatementSyntax forEachStatement)
+        {
+            if (forEachStatement == null)
+            {
+                throw new ArgumentNullException("forEachStatement");
+            }
+
+            return forEachStatement.Statement != null
+                && !forEachStatement.Statement.IsKind(SyntaxKind.Block);
+        }
+
         public static IfStatementSyntax AddBraces(IfStatementSyntax ifStatement)
         {
             Debug.Assert(ifStatement != null && NeedsBraces(ifStatement));
@@ -87,6 +120,33 @@ namespace StylishCode
 
             return doStatement
                 .WithStatement(SyntaxFactory.Block(doStatement.Statement))
+                .WithAdditionalAnnotations(Formatter.Annotation);
+        }
+
+        public static ForStatementSyntax AddBraces(ForStatementSyntax forStatement)
+        {
+            Debug.Assert(forStatement != null && NeedsBraces(forStatement));
+
+            return forStatement
+                .WithStatement(SyntaxFactory.Block(forStatement.Statement))
+                .WithAdditionalAnnotations(Formatter.Annotation);
+        }
+
+        public static ForEachStatementSyntax AddBraces(ForEachStatementSyntax forEachStatement)
+        {
+            Debug.Assert(forEachStatement != null && NeedsBraces(forEachStatement));
+
+            return forEachStatement
+                .WithStatement(SyntaxFactory.Block(forEachStatement.Statement))
+                .WithAdditionalAnnotations(Formatter.Annotation);
+        }
+
+        public static LockStatementSyntax AddBraces(LockStatementSyntax lockStatement)
+        {
+            Debug.Assert(lockStatement != null && NeedsBraces(lockStatement));
+
+            return lockStatement
+                .WithStatement(SyntaxFactory.Block(lockStatement.Statement))
                 .WithAdditionalAnnotations(Formatter.Annotation);
         }
     }

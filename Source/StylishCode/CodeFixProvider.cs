@@ -61,6 +61,33 @@ namespace StylishCode
                     }
 
                     break;
+
+                case SyntaxKind.ForKeyword:
+                    var forStatement = token.Parent as ForStatementSyntax;
+                    if (forStatement != null)
+                    {
+                        return new[] { CreateCodeAction(document, root, forStatement, StyleHelpers.AddBraces) };
+                    }
+
+                    break;
+
+                case SyntaxKind.ForEachKeyword:
+                    var forEachStatement = token.Parent as ForEachStatementSyntax;
+                    if (forEachStatement != null)
+                    {
+                        return new[] { CreateCodeAction(document, root, forEachStatement, StyleHelpers.AddBraces) };
+                    }
+
+                    break;
+
+                case SyntaxKind.LockKeyword:
+                    var lockStatement = token.Parent as LockStatementSyntax;
+                    if (lockStatement != null)
+                    {
+                        return new[] { CreateCodeAction(document, root, lockStatement, StyleHelpers.AddBraces) };
+                    }
+
+                    break;
             }
 
             return null;

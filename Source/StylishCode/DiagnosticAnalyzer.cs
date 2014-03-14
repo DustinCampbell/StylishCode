@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace StylishCode
 {
     [ExportDiagnosticAnalyzer("BracesNeededForControlBlocks", LanguageNames.CSharp)]
-    public class DiagnosticAnalyzer : IDiagnosticAnalyzer, ISyntaxNodeAnalyzer<SyntaxKind>
+    public class DiagnosticAnalyzer : ISyntaxNodeAnalyzer<SyntaxKind>
     {
         private static readonly DiagnosticDescriptor[] descriptors = new[]
         {
@@ -20,7 +20,10 @@ namespace StylishCode
         {
             SyntaxKind.IfStatement,
             SyntaxKind.WhileStatement,
-            SyntaxKind.DoStatement
+            SyntaxKind.DoStatement,
+            SyntaxKind.ForStatement,
+            SyntaxKind.ForEachStatement,
+            SyntaxKind.LockStatement
         };
 
         public IEnumerable<DiagnosticDescriptor> GetSupportedDiagnostics()
@@ -46,6 +49,21 @@ namespace StylishCode
             }
 
             if (TryAnalyzeDoStatement(node, addDiagnostic))
+            {
+                return;
+            }
+
+            if (TryAnalyzeForStatement(node, addDiagnostic))
+            {
+                return;
+            }
+
+            if (TryAnalyzeForEachStatement(node, addDiagnostic))
+            {
+                return;
+            }
+
+            if (TryAnalyzeLockStatement(node, addDiagnostic))
             {
                 return;
             }
@@ -100,6 +118,54 @@ namespace StylishCode
             if (StyleHelpers.NeedsBraces(doStatement))
             {
                 addDiagnostic(CreateDiagnostic("do", doStatement.DoKeyword.GetLocation()));
+            }
+
+            return true;
+        }
+
+        private static bool TryAnalyzeForStatement(SyntaxNode node, Action<Diagnostic> addDiagnostic)
+        {
+            var forStatement = node as ForStatementSyntax;
+            if (forStatement == null)
+            {
+                return false;
+            }
+
+            if (StyleHelpers.NeedsBraces(forStatement))
+            {
+                addDiagnostic(CreateDiagnostic("for", forStatement.ForKeyword.GetLocation()));
+            }
+
+            return true;
+        }
+
+        private static bool TryAnalyzeForEachStatement(SyntaxNode node, Action<Diagnostic> addDiagnostic)
+        {
+            var forEachStatement = node as ForEachStatementSyntax;
+            if (forEachStatement == null)
+            {
+                return false;
+            }
+
+            if (StyleHelpers.NeedsBraces(forEachStatement))
+            {
+                addDiagnostic(CreateDiagnostic("foreach", forEachStatement.ForEachKeyword.GetLocation()));
+            }
+
+            return true;
+        }
+
+        private static bool TryAnalyzeLockStatement(SyntaxNode node, Action<Diagnostic> addDiagnostic)
+        {
+            var lockStatement = node as LockStatementSyntax;
+            if (lockStatement == null)
+            {
+                return false;
+            }
+
+            if (StyleHelpers.NeedsBraces(lockStatement))
+            {
+                addDiagnostic(CreateDiagnostic("lock", lockStatement.LockKeyword.GetLocation()));
             }
 
             return true;
