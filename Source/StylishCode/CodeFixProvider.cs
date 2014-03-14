@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -10,7 +11,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace StylishCode
 {
-    [ExportCodeFixProvider("Add Braces", LanguageNames.CSharp)]
+    [ExportCodeFixProvider("Add braces to control blocks", LanguageNames.CSharp)]
     internal class CodeFixProvider : ICodeFixProvider
     {
         public IEnumerable<string> GetFixableDiagnosticIds()
@@ -29,8 +30,7 @@ namespace StylishCode
                     var ifStatement = token.Parent as IfStatementSyntax;
                     if (ifStatement != null)
                     {
-                        var newRoot = root.ReplaceNode(ifStatement, StyleHelpers.AddBraces(ifStatement));
-                        return new[] { CodeAction.Create("Add braces", document.WithSyntaxRoot(newRoot)) };
+                        return new[] { CreateCodeAction(document, root, ifStatement, StyleHelpers.AddBraces) };
                     }
 
                     break;
@@ -39,14 +39,39 @@ namespace StylishCode
                     var elseClause = token.Parent as ElseClauseSyntax;
                     if (elseClause != null)
                     {
-                        var newRoot = root.ReplaceNode(elseClause, StyleHelpers.AddBraces(elseClause));
-                        return new[] { CodeAction.Create("Add braces", document.WithSyntaxRoot(newRoot)) };
+                        return new[] { CreateCodeAction(document, root, elseClause, StyleHelpers.AddBraces) };
+                    }
+
+                    break;
+
+                case SyntaxKind.WhileKeyword:
+                    var whileStatement = token.Parent as WhileStatementSyntax;
+                    if (whileStatement != null)
+                    {
+                        return new[] { CreateCodeAction(document, root, whileStatement, StyleHelpers.AddBraces) };
+                    }
+
+                    break;
+
+                case SyntaxKind.DoKeyword:
+                    var doStatement = token.Parent as DoStatementSyntax;
+                    if (doStatement != null)
+                    {
+                        return new[] { CreateCodeAction(document, root, doStatement, StyleHelpers.AddBraces) };
                     }
 
                     break;
             }
 
             return null;
+        }
+
+        private static CodeAction CreateCodeAction<TSyntaxNode>(
+            Document document, SyntaxNode root, TSyntaxNode node, Func<TSyntaxNode, TSyntaxNode> nodeUpdater)
+            where TSyntaxNode : SyntaxNode
+        {
+            var newRoot = root.ReplaceNode(node, nodeUpdater(node));
+            return CodeAction.Create("Add braces", document.WithSyntaxRoot(newRoot));
         }
     }
 }

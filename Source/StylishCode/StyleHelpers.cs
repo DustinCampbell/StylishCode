@@ -24,12 +24,34 @@ namespace StylishCode
         {
             if (elseClause == null)
             {
-                throw new ArgumentNullException("ifStatement");
+                throw new ArgumentNullException("elseClause");
             }
 
             return elseClause.Statement != null
                 && !elseClause.Statement.IsKind(SyntaxKind.Block)
                 && !elseClause.Statement.IsKind(SyntaxKind.IfStatement);
+        }
+
+        public static bool NeedsBraces(WhileStatementSyntax whileStatement)
+        {
+            if (whileStatement == null)
+            {
+                throw new ArgumentNullException("whileStatement");
+            }
+
+            return whileStatement.Statement != null
+                && !whileStatement.Statement.IsKind(SyntaxKind.Block);
+        }
+
+        public static bool NeedsBraces(DoStatementSyntax doStatement)
+        {
+            if (doStatement == null)
+            {
+                throw new ArgumentNullException("doStatement");
+            }
+
+            return doStatement.Statement != null
+                && !doStatement.Statement.IsKind(SyntaxKind.Block);
         }
 
         public static IfStatementSyntax AddBraces(IfStatementSyntax ifStatement)
@@ -47,6 +69,24 @@ namespace StylishCode
 
             return elseClause
                 .WithStatement(SyntaxFactory.Block(elseClause.Statement))
+                .WithAdditionalAnnotations(Formatter.Annotation);
+        }
+
+        public static WhileStatementSyntax AddBraces(WhileStatementSyntax whileStatement)
+        {
+            Debug.Assert(whileStatement != null && NeedsBraces(whileStatement));
+
+            return whileStatement
+                .WithStatement(SyntaxFactory.Block(whileStatement.Statement))
+                .WithAdditionalAnnotations(Formatter.Annotation);
+        }
+
+        public static DoStatementSyntax AddBraces(DoStatementSyntax doStatement)
+        {
+            Debug.Assert(doStatement != null && NeedsBraces(doStatement));
+
+            return doStatement
+                .WithStatement(SyntaxFactory.Block(doStatement.Statement))
                 .WithAdditionalAnnotations(Formatter.Annotation);
         }
     }
