@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -11,12 +12,12 @@ namespace StylishCode
     [ExportDiagnosticAnalyzer("BracesNeededForControlBlocks", LanguageNames.CSharp)]
     public class DiagnosticAnalyzer : ISyntaxNodeAnalyzer<SyntaxKind>
     {
-        private static readonly DiagnosticDescriptor[] descriptors = new[]
+        private static readonly ImmutableArray<DiagnosticDescriptor> descriptors = ImmutableArray.Create(new[]
         {
             DiagnosticDescriptors.BracesNeededForControlBlocks
-        };
+        });
 
-        private static readonly SyntaxKind[] syntaxKinds = new[]
+        private static readonly ImmutableArray<SyntaxKind> syntaxKinds = ImmutableArray.Create(new[]
         {
             SyntaxKind.IfStatement,
             SyntaxKind.WhileStatement,
@@ -24,14 +25,14 @@ namespace StylishCode
             SyntaxKind.ForStatement,
             SyntaxKind.ForEachStatement,
             SyntaxKind.LockStatement
-        };
+        });
 
-        public IEnumerable<DiagnosticDescriptor> GetSupportedDiagnostics()
+        public ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            return descriptors;
+            get { return descriptors; }
         }
 
-        public IEnumerable<SyntaxKind> SyntaxKindsOfInterest
+        public ImmutableArray<SyntaxKind> SyntaxKindsOfInterest
         {
             get { return syntaxKinds; }
         }
