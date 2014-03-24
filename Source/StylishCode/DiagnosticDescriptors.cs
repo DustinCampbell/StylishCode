@@ -7,10 +7,9 @@ namespace StylishCode
         public static readonly DiagnosticDescriptor BracesNeededForControlBlocks =
            new DiagnosticDescriptor(
                id: DiagnosticIds.BracesNeededForControlBlocks,
-               kind: "Style",
-               name: "Braces needed for control blocks",
-               messageTemplate: "{0} blocks require braces",
+               description: "Braces needed for control blocks",
+               messageFormat: "{0} blocks require braces",
                category: "Code Style",
-               severity: DiagnosticSeverity.Warning);
+               defaultSeverity: DiagnosticSeverity.Warning);
     }
 }
