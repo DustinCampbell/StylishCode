@@ -2,6 +2,7 @@
 {
     public static class DiagnosticIds
     {
-        public const string BracesNeededForControlBlocks = "SC0001";
+        public const string CurlyBracesNeededForControlBlocks = "SC0001";
+        public const string ClosingCurlyBraceMustBeFollowedByBlankLine = "SC0002";
     }
 }

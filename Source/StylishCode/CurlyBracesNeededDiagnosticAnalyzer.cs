@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -9,12 +8,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace StylishCode
 {
-    [ExportDiagnosticAnalyzer("BracesNeededForControlBlocks", LanguageNames.CSharp)]
-    public class DiagnosticAnalyzer : ISyntaxNodeAnalyzer<SyntaxKind>
+    [ExportDiagnosticAnalyzer("CurlyBracesNeededForControlBlocks", LanguageNames.CSharp)]
+    public class CurlyBracesNeededDiagnosticAnalyzer : ISyntaxNodeAnalyzer<SyntaxKind>
     {
         private static readonly ImmutableArray<DiagnosticDescriptor> descriptors = ImmutableArray.Create(new[]
         {
-            DiagnosticDescriptors.BracesNeededForControlBlocks
+            DiagnosticDescriptors.CurlyBracesNeededForControlBlocks
         });
 
         private static readonly ImmutableArray<SyntaxKind> syntaxKinds = ImmutableArray.Create(new[]
@@ -174,7 +173,7 @@ namespace StylishCode
 
         private static Diagnostic CreateDiagnostic(string name, Location location)
         {
-            return Diagnostic.Create(DiagnosticDescriptors.BracesNeededForControlBlocks, location, name);
+            return Diagnostic.Create(DiagnosticDescriptors.CurlyBracesNeededForControlBlocks, location, name);
         }
     }
 }

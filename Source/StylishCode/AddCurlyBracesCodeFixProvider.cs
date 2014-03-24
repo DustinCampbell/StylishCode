@@ -12,11 +12,11 @@ using Microsoft.CodeAnalysis.Text;
 namespace StylishCode
 {
     [ExportCodeFixProvider("Add braces to control blocks", LanguageNames.CSharp)]
-    internal class CodeFixProvider : ICodeFixProvider
+    internal class AddCurlyBracesCodeFixProvider : ICodeFixProvider
     {
         public IEnumerable<string> GetFixableDiagnosticIds()
         {
-            yield return DiagnosticIds.BracesNeededForControlBlocks;
+            yield return DiagnosticIds.CurlyBracesNeededForControlBlocks;
         }
 
         public async Task<IEnumerable<CodeAction>> GetFixesAsync(Document document, TextSpan span, IEnumerable<Diagnostic> diagnostics, CancellationToken cancellationToken)
