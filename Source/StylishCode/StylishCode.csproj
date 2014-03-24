@@ -43,7 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddBlankLineAfterBlockCodeFixProvider.cs" />
     <Compile Include="AddCurlyBracesCodeFixProvider.cs" />
+    <Compile Include="BlankLineNeededAfterBlockDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticDescriptors.cs" />
     <Compile Include="CurlyBracesNeededDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticIds.cs" />

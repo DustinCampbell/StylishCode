@@ -149,5 +149,56 @@ namespace StylishCode
                 .WithStatement(SyntaxFactory.Block(lockStatement.Statement))
                 .WithAdditionalAnnotations(Formatter.Annotation);
         }
+
+        public static bool NeedsTrailingBlankLine(BlockSyntax block)
+        {
+            if (block == null)
+            {
+                throw new ArgumentNullException("block");
+            }
+
+            var closeBrace = block.CloseBraceToken;
+
+            // Check to see if the closing brace is really there.
+            if (closeBrace.IsKind(SyntaxKind.None))
+            {
+                return false;
+            }
+
+            var lines = block.GetText().Lines;
+            var closeBraceLine = lines.GetLineFromPosition(closeBrace.Span.End);
+
+            // If the close brace line is the last line, it doesn't need a trailing blank line.
+            if (closeBraceLine.LineNumber + 1 == lines.Count)
+            {
+                return false;
+            }
+
+            // If the next token is also a close brace token and is on the next line,
+            // we don't need a trailing blank line.
+            var nextToken = closeBrace.GetNextToken();
+            if (nextToken.IsKind(SyntaxKind.CloseBraceToken))
+            {
+                var nextTokenLine = lines.GetLineFromPosition(nextToken.Span.Start);
+                if (nextTokenLine.LineNumber - 1 == closeBraceLine.LineNumber)
+                {
+                    return false;
+                }
+            }
+
+            // If the line after the closing brace is not whitespace, we need a trailing line.
+            var nextLine = lines[closeBraceLine.LineNumber + 1];
+
+            return !string.IsNullOrWhiteSpace(nextLine.ToString());
+        }
+
+        public static BlockSyntax AddTrailingBlankLine(BlockSyntax block)
+        {
+            Debug.Assert(block != null && NeedsTrailingBlankLine(block));
+
+            return block
+                .WithTrailingTrivia(block.GetTrailingTrivia().Add(SyntaxFactory.CarriageReturnLineFeed))
+                .WithAdditionalAnnotations(Formatter.Annotation);
+        }
     }
 }
