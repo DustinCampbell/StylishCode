@@ -311,5 +311,35 @@ namespace StylishCode.Tests
             Assert.That(result.GetSpans(), Is.EquivalentTo(new[] { TextSpan.FromBounds(10, 33) }));
             Assert.That(result.GetSpans("foo"), Is.EquivalentTo(new[] { TextSpan.FromBounds(0, output.Length) }));
         }
+
+        [Test]
+        public void HandlePotentialAmbiguity1()
+        {
+            const string input = @"class C { void M() { [|int[|]] x = null; } }";
+            const string output = @"class C { void M() { int[] x = null; } }";
+
+            var result = MarkupCode.Parse(input);
+
+            Assert.That(result.Input, Is.EqualTo(input));
+            Assert.That(result.Output, Is.EqualTo(output));
+            Assert.That(result.Position, Is.Null);
+            Assert.That(result.GetSpanNames(), Is.EquivalentTo(new[] { string.Empty }));
+            Assert.That(result.GetSpans(), Is.EquivalentTo(new[] { TextSpan.FromBounds(21, 25) }));
+        }
+
+        [Test]
+        public void HandlePotentialAmbiguity2()
+        {
+            const string input = @"class C { void M() { {|foo:int[|}] x = null; } }";
+            const string output = @"class C { void M() { int[] x = null; } }";
+
+            var result = MarkupCode.Parse(input);
+
+            Assert.That(result.Input, Is.EqualTo(input));
+            Assert.That(result.Output, Is.EqualTo(output));
+            Assert.That(result.Position, Is.Null);
+            Assert.That(result.GetSpanNames(), Is.EquivalentTo(new[] { "foo" }));
+            Assert.That(result.GetSpans("foo"), Is.EquivalentTo(new[] { TextSpan.FromBounds(21, 25) }));
+        }
     }
 }

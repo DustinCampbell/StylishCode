@@ -96,7 +96,7 @@ namespace StylishCode.Tests
 
             var inputIndex = 0;
 
-            while (inputIndex < input.Length - 1)
+            while (inputIndex + 1 < input.Length)
             {
                 var current = input[inputIndex];
                 var next = input[inputIndex + 1];
@@ -113,6 +113,19 @@ namespace StylishCode.Tests
                 }
                 else if (IsSpanStartDelimiter(current, next))
                 {
+                    // Handle potential ambiguities
+                    if (inputIndex + 2 < input.Length)
+                    {
+                        var lookAhead = input[inputIndex + 2];
+
+                        if (lookAhead == ']' || lookAhead == '}')
+                        {
+                            outputBuilder.Append(current);
+                            inputIndex++;
+                            continue;
+                        }
+                    }
+
                     PushSpanStart();
                     inputIndex += 2;
                 }
@@ -134,17 +147,19 @@ namespace StylishCode.Tests
                 }
                 else if (IsNamedSpanStartDelimiter(current, next))
                 {
+                    // Is the next character alphanumeric? If not, this isn't a named delimiter.
+                    if (inputIndex + 2 < input.Length && !char.IsLetterOrDigit(input[inputIndex + 2]))
+                    {
+                        outputBuilder.Append(current);
+                        inputIndex++;
+                        continue;
+                    }
+
                     this.nameBuilder = this.nameBuilder == null
                         ? new StringBuilder()
                         : this.nameBuilder.Clear();
 
                     inputIndex += 2;
-
-                    // Is the next character ':'? If so, throw -- a name is required.
-                    if (inputIndex < input.Length && input[inputIndex] == ':')
-                    {
-                        throw new ArgumentException("Encounted named span with no name.", "input");
-                    }
 
                     // Read name
                     while (inputIndex < input.Length)
@@ -184,7 +199,7 @@ namespace StylishCode.Tests
                 }
                 else
                 {
-                    outputBuilder.Append(current);
+                    this.outputBuilder.Append(current);
                     inputIndex++;
                 }
             }
