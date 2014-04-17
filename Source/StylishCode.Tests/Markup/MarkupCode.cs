@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis.Text;
 
-namespace StylishCode.Tests
+namespace StylishCode.Tests.Markup
 {
     public partial class MarkupCode
     {

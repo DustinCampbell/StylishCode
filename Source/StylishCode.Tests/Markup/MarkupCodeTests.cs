@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.Text;
 using NUnit.Framework;
 
-namespace StylishCode.Tests
+namespace StylishCode.Tests.Markup
 {
     [TestFixture]
     public class MarkupCodeTests
